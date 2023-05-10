@@ -1,7 +1,8 @@
 package com.example.demo;
 
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,9 @@ public class DemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		persistentHelloWorld();
+		var executor = ForkJoinPool.commonPool();
+		var future = CompletableFuture.runAsync(() -> persistentHelloWorld(), executor);
+		future.join();
 	}
 
 	@SneakyThrows
